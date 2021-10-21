@@ -1,0 +1,54 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Aldy_Wr
+
+//@version=4
+strategy("gedek trade strategy", overlay=true, default_qty_type=strategy.percent_of_equity, default_qty_value=20)
+EMAlength=input(100,"EMA LENGTH?")
+
+lensig = 14
+len = 14
+up = change(high)
+down = -change(low)
+plusDM = na(up) ? na : (up > down and up > 0 ? up : 0)
+minusDM = na(down) ? na : (down > up and down > 0 ? down : 0)
+trur = rma(tr, len)
+plus = fixnan(100 * rma(plusDM, len) / trur)
+minus = fixnan(100 * rma(minusDM, len) / trur)
+sum = plus + minus
+mdx = 100 * rma(abs(plus - minus) / (sum == 0 ? 1 : sum), lensig)
+
+src = hlc3
+haOpen = 0.0
+haOpen := (src + nz(haOpen[1])) / 2
+haC = (hlc3 + max(high, nz(haOpen)) + min(low, nz(haOpen))) / 3
+EMA1 = ema(haC, EMAlength)
+EMA2 = ema(EMA1, EMAlength)
+MMA1 = 3 * EMA1 - 3 * EMA2
+EMA3 = ema(MMA1, EMAlength)
+EMA4 = ema(EMA3, EMAlength)
+MMA2 = 3 * EMA3 - 3 * EMA4
+IPEK = MMA1 - MMA2
+ndlemesh = MMA1 + IPEK
+EMA5 = ema(hlc3, EMAlength)
+EMA6 = ema(EMA5, EMAlength)
+MMA3 = 3 * EMA5 - 3 * EMA6
+EMA7 = ema(MMA3, EMAlength)
+EMA8 = ema(EMA7, EMAlength)
+MMA4 = 3 * EMA7 - 3 * EMA8
+IPEK1 = MMA3 - MMA4
+master = MMA3 + IPEK1
+
+last_signal = 0
+
+inTrade = strategy.position_size > 0
+notInTrade = strategy.position_size <= 0
+
+longCondition = master>ndlemesh and master[1]<=ndlemesh[1] and (nz(last_signal[1]) == 0 or nz(last_signal[1]) == -1) // and mdx[1] > 21 and mdx[1] < 50
+if (longCondition)
+	strategy.entry("Buy Entry", strategy.long)
+
+shortCondition = master<ndlemesh and master[1]>=ndlemesh[1] and (nz(last_signal[1]) == 0 or nz(last_signal[1]) == 1) //and mdx[1] > 15 and mdx[1] < 25
+if (shortCondition)
+	strategy.entry("Sell Entry", strategy.short)
+
+bgcolor(notInTrade ? color.orange : color.blue)
