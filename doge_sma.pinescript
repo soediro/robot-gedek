@@ -1,5 +1,5 @@
 //@version=4
-strategy("BTCUSDTPERP SMA", overlay=true, initial_capital=25, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
+strategy("PERPBTC SMA", overlay=true, initial_capital=25, default_qty_type=strategy.percent_of_equity, default_qty_value=100)
 
 start_date = input(title="Start Date", type=input.integer, defval=4, minval=1, maxval=31)
 start_month = input(title="Start Month", type=input.integer, defval=9, minval=1, maxval=12)
