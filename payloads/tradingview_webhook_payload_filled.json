@@ -2,7 +2,7 @@
     "passphrase": "UC28jXFGYoqVRx0cgQDKr612RqLr2eHH",
     "time": "2021-10-21T19:53:17Z",
     "exchange": "BINANCE",
-    "ticker": "BTCUSDTPERP",
+    "ticker": "BTCUSDT",
     "bar": {
         "time": "2021-10-21T19:53:00Z",
         "open": 0.002748,
